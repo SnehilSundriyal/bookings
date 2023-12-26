@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"path/filepath"
 
 	"github.com/SnehilSundriyal/bookings/internal/config"
 	"github.com/SnehilSundriyal/bookings/internal/handlers"
@@ -32,7 +33,11 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Post("/make-reservation", handlers.Repo.PostReservation)
 	mux.Get("/reservation-summary", handlers.Repo.ReservationSummary)
 
-	fileServer := http.FileServer(http.Dir("./static/"))
+	staticDir, _ := filepath.Abs("../../static")
+
+	fileServer := http.FileServer(http.Dir(staticDir))
+
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
+
 	return mux
 }
